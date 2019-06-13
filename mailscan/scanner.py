@@ -1,4 +1,3 @@
-import mmap
 import time
 
 from requests import adapters
@@ -23,6 +22,7 @@ class Scanner:
         self.headers = {'User-Agent': UserAgent().chrome}
         self.wait_count = 0
         self.url_queue.push(self.starting_url)
+        self.filename = "./mails.csv"
 
     def _init_session(self):
         sess = HTMLSession()
@@ -71,16 +71,16 @@ class Scanner:
                     href = '/'.join(webpage.url.split('/')[0:3]) + href
 
                 if '://' not in href:
-                    log.error(f'Provided URL has no proto specified ({href})')
+                    log.warning(f'Provided URL has no proto specified ({href})')
                     continue
 
                 if href is None or len(href) < 10:
-                    log.error(f'Provided URL {href} is too short')
+                    log.warning(f'Provided URL {href} is too short')
                     continue
 
                 domain = '.'.join(urlparse(webpage.url).netloc.split('.')[-2:])
                 if domain not in href:
-                    log.warning(f"URL {href} is not in provided domain {domain}; omitting")
+                    log.info(f"URL {href} is not in provided domain {domain}; omitting")
                     continue
 
                 self.url_queue.push(href)
@@ -90,10 +90,6 @@ class Scanner:
             return True
 
     def _add_mail(self, webpage, mail):
-        with open('./mails.csv', mode='a+') as f:  # , mmap.mmap(f.fileno(), 0, mmap.MAP_PRIVATE, mmap.PROT_READ) as s:
-            # if bytes(mail, encoding='UTF8') in s.read():
-            #     log.warning(f'Tried to add {mail}, which is already added')
-            #     return
-
+        with open(self.filename, mode='a+') as f:
             log.info(f'SUCCESS! Got {mail}!')
             f.writelines(f'"{webpage}";"{mail}"\n')

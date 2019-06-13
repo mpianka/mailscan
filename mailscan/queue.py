@@ -25,7 +25,7 @@ class Queue:
 
     def push(self, url):
         if not isinstance(url, str):
-            log.error(f'Cannot add object of type {type(url)} to queue!')
+            log.warning(f'Cannot add object of type {type(url)} to queue!')
             return None
 
         try:
@@ -34,11 +34,11 @@ class Queue:
             return None
 
         if url in self.popped_items:
-            # log.warning(f"Already scanned the {url}; omitting")
+            log.info(f"Already scanned the {url}; omitting")
             return None
 
         if url in self.items:
-            # log.warning(f"Url {url} is already in queue; omitting")
+            log.info(f"Url {url} is already in queue; omitting")
             return None
 
         log.info(f'Adding {url} to the queue\nQueue length: {len(self.items)}')

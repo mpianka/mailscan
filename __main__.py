@@ -9,7 +9,7 @@ def run_scanner():
     s = Scanner(addr)
     s.scan()
 
-    print('READY! You\'ll find found addresses in mails.txt file')
+    print('DONE! You\'ll find found addresses in mails.txt file')
     exit(0)
 
 
